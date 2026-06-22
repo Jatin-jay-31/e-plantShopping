@@ -9,7 +9,7 @@ export const useCart = () => {
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
-  const addToCart = (plant) => {
+  const addItem = (plant) => {
     setCart((prevCart) => {
       const itemIndex = prevCart.findIndex((item) => item.id === plant.id);
       if (itemIndex > -1) {
@@ -21,7 +21,7 @@ export const CartProvider = ({ children }) => {
     });
   };
 
-  const removeFromCart = (id) => {
+  const removeItem = (id) => {
     setCart((prevCart) => prevCart.filter((item) => item.id !== id));
   };
 
@@ -37,6 +37,13 @@ export const CartProvider = ({ children }) => {
     setCart((prevCart) =>
       prevCart.map((item) =>
         item.id === id ? { ...item, quantity: Math.max(item.quantity - 1, 1) } : item
+      )
+    );
+  };
+  const updateQuantity = (id) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.id === id ? { ...item, quantity: Math.max(item.quantity, 1) } : item
       )
     );
   };
