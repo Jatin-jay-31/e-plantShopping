@@ -1,47 +1,87 @@
-import React from 'react';
-import { useCart } from '../context/CartContext';
-import PlantCard from '../components/PlantCard';
-import './ProductListingPage.css';
+import React, { useState } from 'react';
+import './ProductList.css';
 
-import snakePlantImg from '../assets/snake-plant.jpg';
-import spiderPlantImg from '../assets/spider-plant.jpg';
-import lavenderImg from '../assets/lavender.jpg';
-import rosemaryImg from '../assets/rosemary.jpg';
-import fiddleLeafFigImg from '../assets/fiddle-leaf-fig.jpg';
-import aloeVeraImg from '../assets/aloe-vera.jpg';
-import Header from '../components/Header';
+function ProductList() {
+    // State to keep track of added items (e.g., { 'Snake Plant': true })
+    const [addedToCart, setAddedToCart] = useState({});
+    const [cartCount, setCartCount] = useState(0);
 
-const plants = [
-  { id: 1, category: 'Air Purifying', name: 'Snake Plant', price: 15, thumbnail: snakePlantImg },
-  { id: 2, category: 'Air Purifying', name: 'Spider Plant', price: 12, thumbnail: spiderPlantImg },
-  { id: 3, category: 'Aromatic', name: 'Lavender', price: 10, thumbnail: lavenderImg },
-  { id: 4, category: 'Aromatic', name: 'Rosemary', price: 8, thumbnail: rosemaryImg },
-  { id: 5, category: 'Ornamental', name: 'Fiddle Leaf Fig', price: 20, thumbnail: fiddleLeafFigImg },
-  { id: 6, category: 'Ornamental', name: 'Aloe Vera', price: 18, thumbnail: aloeVeraImg },
-];
+    // Mock plant data with multiple categories and unique items
+    const categories = [
+        {
+            category: "Air Purifying Plants",
+            plants: [
+                { name: "Snake Plant", price: "$15", image: "https://unsplash.com" },
+                { name: "Spider Plant", price: "$12", image: "https://unsplash.com" }
+            ]
+        },
+        {
+            category: "Aromatic Plants",
+            plants: [
+                { name: "Lavender", price: "$18", image: "https://unsplash.com" },
+                { name: "Jasmine", price: "$20", image: "https://unsplash.com" }
+            ]
+        },
+        {
+            category: "Low Maintenance",
+            plants: [
+                { name: "Aloe Vera", price: "$10", image: "https://unsplash.com" },
+                { name: "Cast Iron Plant", price: "$25", image: "https://unsplash.com" }
+            ]
+        }
+    ];
 
-const categories = ['Air Purifying', 'Aromatic', 'Ornamental'];
+    // Handle add to cart click event
+    const handleAddToCart = (plantName) => {
+        setAddedToCart((prevState) => ({
+            ...prevState,
+            [plantName]: true
+        }));
+        setCartCount(prevCount => prevCount + 1);
+    };
 
-const ProductListingPage = () => {
-  const { addToCart } = useCart();
+    return (
+        <div className="product-list-container">
+            {/* Navigation Bar Header Element */}
+            <nav className="navbar">
+                <div className="navbar-logo">
+                    <h2>Paradise Nursery</h2>
+                </div>
+                <div className="navbar-links">
+                    <a href="#plants" className="nav-item">Plants</a>
+                    <a href="#cart" className="nav-item cart-icon">
+                        🛒 <span className="cart-badge">{cartCount}</span>
+                    </a>
+                </div>
+            </nav>
 
-  return (
-    <div className="product-listing-page">
-      <Header />
-      <div className="products">
-        {categories.map(category => (
-          <div key={category}>
-            <h2>{category}</h2>
-            <div className="plant-cards">
-              {plants.filter(plant => plant.category === category).map(plant => (
-                <PlantCard key={plant.id} plant={plant} />
-              ))}
+            {/* Plants Categories and Grid System */}
+            <div className="plants-display" id="plants">
+                {categories.map((cat, index) => (
+                    <div key={index} className="category-section">
+                        <h2 className="category-title">{cat.category}</h2>
+                        <div className="product-grid">
+                            {cat.plants.map((plant, pIndex) => (
+                                <div key={pIndex} className="product-card">
+                                    <img src={plant.image} alt={plant.name} className="product-image" />
+                                    <h3>{plant.name}</h3>
+                                    <p className="product-price">{plant.price}</p>
+                                    <button 
+                                        className={`add-to-cart-btn ${addedToCart[] ? 'disabled' : ''}`}
+                                        onClick={() => handleAddToCart(plant.name)}
+                                        disabled={addedToCart[plant.name]}
+                                    >
+                                        {addedToCart[plant.name] ? 'Added to Cart' : 'Add to Cart'}
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ))}
             </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
+        </div>
+    );
+}
 
-export default ProductListingPage;
+export default ProductList;
+
